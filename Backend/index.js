@@ -23,9 +23,9 @@ app.use(express.json()) // middleware to ready values from body of request
 
 // available routes 
 
-app.use("/handytask/auth", require("./routes/auth")); // this is the parent endpoint for authentication related routes
-app.use("/handytask/tasks", require("./routes/tasks")); // this is the parent endpoint for notes related routes
+app.use("/handlytask/auth", require("./routes/auth")); // this is the parent endpoint for authentication related routes
+app.use("/handlytask/tasks", require("./routes/tasks")); // this is the parent endpoint for notes related routes
 
 app.listen(port, () => {
-  console.log(`handytask web-app listening on port ${port}`)
+  console.log(`handlytask web-app listening on port ${port}`)
 })

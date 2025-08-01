@@ -1,8 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-// import noteContext from '../Context/NoteContext';
+import taskContext from '../Context/TaskContext';
 import validator from "validator";
-import "./UserAuthStyle.css";;
 
 export default function Signup() {
 
@@ -11,7 +10,7 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleName = (event) => {
+  const handleRole = (event) => {
     setRole(event.target.value);
   }
 
@@ -24,47 +23,46 @@ export default function Signup() {
   }
 
   const navigate = useNavigate();
-  // const context = useContext(noteContext);
-  // const { setUserAuth, setUserEmail } = context;
+  const context = useContext(taskContext);
+  const { setUserAuth, setUserEmail } = context;
 
   const createUser = async () => {
     if (role === "" && email === "" && password === "") {
       setErrorMessage("enter all values");
+    } else if (role === "") {
+      setErrorMessage("enter role");
     } else if (email === "") {
       setErrorMessage("enter email");
     } else if (password === "") {
       setErrorMessage("enter password");
-    } else if (role === "") {
-      setErrorMessage("enter role");
     } else {
       if (!validator.isEmail(email)) {
         setErrorMessage("enter a valid email");
       } else if (password.length < 5) {
         setErrorMessage("enter password bigger than 5 characters");
-      } else if (role.length < 10) {
+      } else if (role.length < 5) {
         setErrorMessage("enter role bigger than 5 characters");
       } else {
-        console.log(email+" "+password+" "+role);
-        // const response = await fetch("https://inotebook-backend-gx6p.onrender.com/mern/auth/createuser", {
-        //   method: "POST",
-        //   headers: {
-        //     'Content-Type': 'application/json'
-        //   },
-        //   body: JSON.stringify({ name, email, password })
-        // });
+        const response = await fetch("http://localhost:5000/handlytask/auth/createuser", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password, role })
+        });
 
-        // const json = await response.json();
-        // if (json.success) {
-        //   setErrorMessage(json.message);
-        //   setTimeout(() => {
-        //     navigate("/about");
-        //     setUserAuth(json.authToken);
-        //     setUserEmail(email);
-        //   }, 1500);
-        // } else {
-        //   setErrorMessage(json.message);
-        // }
-        // console.log(json.response);
+        const json = await response.json();
+        if (json.success) {
+          setErrorMessage(json.message);
+          setTimeout(() => {
+            navigate("/home");
+            setUserAuth(json.authToken);
+            setUserEmail(email);
+          }, 1500);
+        } else {
+          setErrorMessage(json.message);
+        }
+        console.log(json.response);
       }
     }
   }
@@ -92,9 +90,9 @@ export default function Signup() {
           <input type="text" className="form-control" id="exampleInputPassword1" value={password} onChange={handlePassword} />
         </div>
 
-        <div className="mb-3">
+         <div className="mb-3">
           <label style={{ fontWeight: "bolder" }} for="exampleInputEmail1" className="form-label">Role</label>
-          <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value={role} onChange={handleName} />
+          <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" value={role} onChange={handleRole} />
         </div>
 
         <p style={{
@@ -107,3 +105,7 @@ export default function Signup() {
     </>
   )
 }
+
+
+
+

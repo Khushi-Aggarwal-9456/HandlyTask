@@ -1,8 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import noteContext from '../Context/NoteContext';
+import taskContext from '../Context/TaskContext';
 import validator from "validator";
-import "./UserAuthStyle.css";
+import "./UserAuth.css";
+// import "./TabsStyle.css";
 
 export default function Login() {
 
@@ -11,8 +12,8 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState("");
 
   const navigate = useNavigate();
-  // const context = useContext(noteContext);
-  // const { setUserAuth, setUserEmail } = context;
+  const context = useContext(taskContext);
+  const { setUserAuth, setUserEmail } = context;
 
   const handleEmail = (event) => {
     setEmail(event.target.value);
@@ -36,28 +37,28 @@ export default function Login() {
         setErrorMessage("enter password bigger than 5 characters");
       } else {
         setErrorMessage("");
-        console.log(email+" "+password);
-        // const response = await fetch("https://inotebook-backend-gx6p.onrender.com/mern/auth/login", {
-        //   method: "POST",
-        //   headers: {
-        //     'Content-Type': 'application/json'
-        //   },
-        //   body: JSON.stringify({ email, password })
-        // });
+        console.log(email, password);
+        const response = await fetch("http://localhost:5000/handlytask/auth/loginuser", {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        });
 
-        // const json = await response.json();
-        // console.log(json);
+        const json = await response.json();
+        console.log(json);
 
-        // if (json.success) {
-        //   setErrorMessage(json.message);
-        //   setTimeout(() => {
-        //     navigate("/about");
-        //     setUserAuth(json.authToken);
-        //     setUserEmail(email);
-        //   }, 1500);
-        // } else {
-        //   setErrorMessage(json.message);
-        // }
+        if (json.success) {
+          setErrorMessage(json.message);
+          setTimeout(() => {
+            navigate("/home");
+            setUserAuth(json.authToken);
+            setUserEmail(email);
+          }, 1500);
+        } else {
+          setErrorMessage(json.message);
+        }
       }
     }
   }
@@ -93,3 +94,6 @@ export default function Login() {
     </>
   )
 }
+
+
+
