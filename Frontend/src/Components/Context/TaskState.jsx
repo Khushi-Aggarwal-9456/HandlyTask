@@ -5,7 +5,8 @@ import TaskContext from './TaskContext';
 const TaskState = (props) => {
 
   // const host = "https://inotebook-backend-gx6p.onrender.com";
-  const host = "http://localhost:5000";
+  // const host = "http://localhost:5000";
+  const host = "https://tasky-backend-hnww.onrender.com";
 
   const tempNotes = [];
   const tempUsers = [];
@@ -23,7 +24,7 @@ const TaskState = (props) => {
 
   const fetchAllNotes = async () => {
     // console.log("in fetchAllNotes ");
-    const response = await (fetch(`${host}/handlytask/tasks/fetchalltasks`, {
+    const response = await (fetch(`${host}/tasky/tasks/fetchalltasks`, {
       method: "GET",
       headers: {
         'Content-Type': 'application/json',
@@ -40,7 +41,7 @@ const TaskState = (props) => {
   }
 
   const fetchAllUsers = async () => {
-    const response = await (fetch(`${host}/handlytask/auth/getallusers`, {
+    const response = await (fetch(`${host}/tasky/auth/getallusers`, {
       method: "POST"
     }));
     const json = await response.json();
@@ -64,7 +65,7 @@ const TaskState = (props) => {
 
     // Now we are going to make API calls 
 
-    const response = await (fetch(`${host}/handlytask/tasks/addtasks`, {
+    const response = await (fetch(`${host}/tasky/tasks/addtasks`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
@@ -84,7 +85,7 @@ const TaskState = (props) => {
     // Now we are going to make API calls 
     // alert("id to updtae: "+id);
 
-    const response = await (fetch(`${host}/handlytask/tasks/updatetask/${id}`, {
+    const response = await (fetch(`${host}/tasky/tasks/updatetask/${id}`, {
       method: "PUT",
       headers: {
         'Content-Type': 'application/json',
@@ -107,7 +108,7 @@ const TaskState = (props) => {
 
   const deleteNote = async (id) => {
 
-    const response = await (fetch(`${host}/handlytask/tasks/deletetask/${id}`, {
+    const response = await (fetch(`${host}/tasky/tasks/deletetask/${id}`, {
       method: "DELETE",
       headers: {
         'Content-Type': 'application/json',
@@ -125,7 +126,7 @@ const TaskState = (props) => {
   }
 
   const deleteUser = async (id) => {
-    const response = await (fetch(`${host}/handlytask/auth/deleteuser/${id}`, {
+    const response = await (fetch(`${host}/tasky/auth/deleteuser/${id}`, {
       method: "DELETE",
       // headers: {
       //   'Content-Type': 'application/json',
@@ -143,7 +144,7 @@ const TaskState = (props) => {
     // Now we are going to make API calls 
     // alert("id to updtae: "+id);
 
-    const response = await (fetch(`${host}/handlytask/tasks/updatetask/${id}`, {
+    const response = await (fetch(`${host}/tasky/tasks/updatetask/${id}`, {
       method: "PUT",
       headers: {
         'Content-Type': 'application/json',

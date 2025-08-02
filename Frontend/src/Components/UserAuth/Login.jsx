@@ -36,7 +36,7 @@ export default function Login() {
         setErrorMessage("enter password bigger than 5 characters");
       } else {
         setErrorMessage("");
-        const response = await fetch("http://localhost:5000/handlytask/auth/loginuser", {
+        const response = await fetch("https://tasky-backend-hnww.onrender.com/tasky/auth/loginuser", {
           method: "POST",
           headers: {
             'Content-Type': 'application/json'
