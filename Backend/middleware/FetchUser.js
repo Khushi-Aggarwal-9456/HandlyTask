@@ -2,7 +2,7 @@
 
 const jwt = require("jsonwebtoken");
 
-const JWT_SIGN = "handytask"; // this is the JWT SIGN, use to generate Token of logged user
+const JWT_SIGN = "handlytask"; // this is the JWT SIGN, use to generate Token of logged user
 
 const FetchUser =(req, res, next) => {
 

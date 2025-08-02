@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import taskContext from '../Context/TaskContext';
 import validator from "validator";
 import "./UserAuth.css";
-// import "./TabsStyle.css";
 
 export default function Login() {
 
@@ -13,7 +12,7 @@ export default function Login() {
 
   const navigate = useNavigate();
   const context = useContext(taskContext);
-  const { setUserAuth, setUserEmail } = context;
+  const { setUserAuth, setUserEmail, setUserType } = context;
 
   const handleEmail = (event) => {
     setEmail(event.target.value);
@@ -37,7 +36,6 @@ export default function Login() {
         setErrorMessage("enter password bigger than 5 characters");
       } else {
         setErrorMessage("");
-        console.log(email, password);
         const response = await fetch("http://localhost:5000/handlytask/auth/loginuser", {
           method: "POST",
           headers: {
@@ -47,10 +45,10 @@ export default function Login() {
         });
 
         const json = await response.json();
-        console.log(json);
 
         if (json.success) {
           setErrorMessage(json.message);
+          setUserType(json.user.role);
           setTimeout(() => {
             navigate("/home");
             setUserAuth(json.authToken);
@@ -73,7 +71,7 @@ export default function Login() {
         // border : "1px solid black",
         margin: "2% auto",
         padding: "2%",
-        width: "80%"
+        width: "80%",
       }}>
         <div className="mb-3">
           <label style={{ fontWeight: "bolder" }} for="exampleInputEmail1" className="form-label">Email address</label>
@@ -94,6 +92,4 @@ export default function Login() {
     </>
   )
 }
-
-
 

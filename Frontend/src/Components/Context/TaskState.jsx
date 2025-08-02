@@ -8,16 +8,21 @@ const TaskState = (props) => {
   const host = "http://localhost:5000";
 
   const tempNotes = [];
+  const tempUsers = [];
 
   const [notes, setNotes] = useState(tempNotes);
   const [alertMessage, setAlertMessage] = useState("");
   const [toShow, toggleToShow] = useState(false);
   const [userAuth, setUserAuth] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [userType, setUserType] = useState("");
+
+  const [users, setUsers] = useState(tempUsers);
 
   // fetching all the notes
 
   const fetchAllNotes = async () => {
+    // console.log("in fetchAllNotes ");
     const response = await (fetch(`${host}/handlytask/tasks/fetchalltasks`, {
       method: "GET",
       headers: {
@@ -30,12 +35,32 @@ const TaskState = (props) => {
 
     const json = await response.json();
     const allNotes = json.tasks;
+    console.log(allNotes);
     setNotes(allNotes);
+  }
+
+  const fetchAllUsers = async () => {
+    const response = await (fetch(`${host}/handlytask/auth/getallusers`, {
+      method: "POST"
+    }));
+    const json = await response.json();
+    console.log(json);
+    let allUsers = json.users;
+    console.log('email: ');
+    let newUsers = [];
+
+    allUsers.map((user) => {
+      if(String(user.email) !== String(userEmail)){
+        newUsers.push(user);
+      }
+    });
+
+    setUsers(newUsers);
   }
 
   // adding a new note
 
-  const addNote = async (title, description, status, priority, assignedto) => {
+  const addNote = async (title, description, status, priority, duedate, assignedto) => {
 
     // Now we are going to make API calls 
 
@@ -46,7 +71,7 @@ const TaskState = (props) => {
         'auth-token': userAuth
         // 'auth-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjg4YmUwZjYxMjJhMjdiNjgzYmI1ZDdhIn0sImlhdCI6MTc1NDA3MzAzNn0.hqGbhNehdBCGqyQL1-CGSDID-eAVNSiA_0WznNBK9gI"
       },
-      body: JSON.stringify({ title, description, status, priority, assignedto })
+      body: JSON.stringify({ title, description, status, priority, duedate, assignedto })
     }));
 
     // setNotes(notes.concat(note));
@@ -99,8 +124,45 @@ const TaskState = (props) => {
     setNotes(newNotes)
   }
 
+  const deleteUser = async (id) => {
+    const response = await (fetch(`${host}/handlytask/auth/deleteuser/${id}`, {
+      method: "DELETE",
+      // headers: {
+      //   'Content-Type': 'application/json',
+      //   'auth-token': userAuth
+      //   // 'auth-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjg4YmUwZjYxMjJhMjdiNjgzYmI1ZDdhIn0sImlhdCI6MTc1NDA3MzAzNn0.hqGbhNehdBCGqyQL1-CGSDID-eAVNSiA_0WznNBK9gI"
+      // }
+
+    }));
+    const json = await response.json();
+    console.log(json.message);
+  }
+
+  const updateUser = async (id, role) => {
+
+    // Now we are going to make API calls 
+    // alert("id to updtae: "+id);
+
+    const response = await (fetch(`${host}/handlytask/tasks/updatetask/${id}`, {
+      method: "PUT",
+      headers: {
+        'Content-Type': 'application/json',
+        // 'auth-token': "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjg4YmUwZjYxMjJhMjdiNjgzYmI1ZDdhIn0sImlhdCI6MTc1NDA3MzAzNn0.hqGbhNehdBCGqyQL1-CGSDID-eAVNSiA_0WznNBK9gI"
+      },
+      body: JSON.stringify({ role })
+    }));
+
+
+    // for(let g=0;g<notes.length;g++){
+    //     if(notes[g]._id === id){
+    //         notes[g].title = title;
+    //         notes[g].description = description;
+    //     }
+    // }
+  }
+
   return (
-    <TaskContext.Provider value={{ notes, addNote, updateNote, deleteNote, fetchAllNotes, alertMessage, setAlertMessage, toShow, toggleToShow, userAuth, setUserAuth, userEmail, setUserEmail }}>
+    <TaskContext.Provider value={{ notes, addNote, updateNote, deleteNote, fetchAllNotes, alertMessage, setAlertMessage, toShow, toggleToShow, userAuth, setUserAuth, userEmail, setUserEmail, userType, setUserType, users, setUsers, fetchAllUsers, deleteUser, updateUser }}>
       {props.children}
     </TaskContext.Provider>
   )
@@ -108,69 +170,3 @@ const TaskState = (props) => {
 
 export default TaskState;
 
-
-
-
-// import TaskContext from "./TaskContext";
-
-// const TaskState = (props) => {
-
-//   const initialTasks = [
-//     {
-//       "title": "T1",
-//       "description": "this is T1",
-//       "status": "C",
-//       "priority": "Y",
-//       "duedate": "01-08-2025",
-//       "assignedto": "Khushi"
-//     },
-//     {
-//       "title": "T2",
-//       "description": "this is T2",
-//       "status": "C",
-//       "priority": "Y",
-//       "duedate": "01-08-2025",
-//       "assignedto": "Gangesh"
-//     },
-//     {
-//       "title": "T3",
-//       "description": "this is T3",
-//       "status": "C",
-//       "priority": "Y",
-//       "duedate": "01-08-2025",
-//       "assignedto": "Khushi"
-//     },
-//     {
-//       "title": "T4",
-//       "description": "this is T4",
-//       "status": "C",
-//       "priority": "Y",
-//       "duedate": "01-08-2025",
-//       "assignedto": "Khushi"
-//     }
-//   ];
-
-//   const [tasks, setTasks] = useState(initialTasks);
-
-//   const addNewTask = async (title, description, status, priority, duedtae, assignedto) => {
-//     const newTask = {
-//       "title": title,
-//       "description": description,
-//       "status": status,
-//       "priority": priority,
-//       "duedate": duedtae,
-//       "assignedto": assignedto
-//     };
-
-//     setTasks(tasks.concat(newTask));
-//     console.log(tasks);
-//   }
-
-//   return (
-//     <TaskContext.Provider value={{ tasks, addNewTask }}>
-//       {props.children}
-//     </TaskContext.Provider>
-//   )
-// }
-
-// export default TaskState;

@@ -6,9 +6,9 @@ const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
 const FetchUser = require("../middleware/FetchUser");
 
-const JWT_SIGN = "handytask"; // this is the JWT SIGN, use to generate Token of logged user
+const JWT_SIGN = "handlytask"; // this is the JWT SIGN, use to generate Token of logged user
 
-// endpoint to create user using POST request and endpoint "/handytask/auth/createuser", no login required
+// endpoint to create user using POST request and endpoint "/tasky/auth/createuser", no login required
 router.post(
   "/createuser",
   [
@@ -63,7 +63,7 @@ router.post(
   }
 );
 
-// endpoint to login user using POST request and endpoint "/handytask/auth/login", no login required
+// endpoint to login user using POST request and endpoint "/tasky/auth/login", no login required
 
 router.post("/loginuser", [
   body("email", "enter a valid email").isEmail(),
@@ -101,14 +101,14 @@ router.post("/loginuser", [
 
     success = true;
 
-    res.status(200).json({ success, authToken, message: "User found successfully" }); // sending the authToken, when it found successfully
+    res.status(200).json({ user, success, authToken, message: "User found successfully" }); // sending the authToken, when it found successfully
 
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-// endpoint to get logedin user details using POST request and endpoint "/handytask/auth/getuser", login required
+// endpoint to get logedin user details using POST request and endpoint "/tasky/auth/getuser", login required
 
 router.post("/getuser", FetchUser, async (req, res) => {
   try {
@@ -129,17 +129,17 @@ router.post("/getuser", FetchUser, async (req, res) => {
   }
 });
 
-// endpoint to update loggedin user using PUT request and endpoint "/handytask/auth/updateuser", login required
+// endpoint to update loggedin user using PUT request and endpoint "/tasky/auth/updateuser", login required
 
-router.put("/updateuser", [
+router.put("/updateuser/:id", [
   body("password", "password length should be grater than 5").isLength({ min: 5 }),
   body("role", "role  shold have atleats one character").isLength({ min: 1 })
 ], FetchUser, async (req, res) => {
   try {
-    const userID = req.user.id; // fetching the userID from req.user.id
+    const userID = req.params.id; // fetching the userID from req.user.id
     console.log("in getUser: " + userID);
 
-    const user = await User.findById(userID).select("-password"); // fetching the user details except the password
+    const user = await User.findById(req.params.id).select("-password"); // fetching the user details except the password
 
     if (!user) {
       res.status(400).json({ message: "Login with correct credintials" });
@@ -162,11 +162,11 @@ router.put("/updateuser", [
   }
 });
 
-// endpoint to delete user using DELETE request and endpoint "/handytask/auth/deleteuser", login required
+// endpoint to delete user using DELETE request and endpoint "/tasky/auth/deleteuser", login required
 
-router.delete("/deleteuser", FetchUser, async (req, res) => {
+router.delete("/deleteuser/:id", async (req, res) => {
   try {
-    const userID = req.user.id; // fetching the userID from req.user.id
+    const userID = req.params.id; // fetching the userID from req.user.id
     console.log("in getUser: " + userID);
 
     const user = await User.findById(userID).select("-password"); // fetching the user details except the password
@@ -182,6 +182,17 @@ router.delete("/deleteuser", FetchUser, async (req, res) => {
     });
 
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// endpoint to delete user using DELETE request and endpoint "/tasky/auth/getallusers", login required
+
+router.post("/getallusers", async (req, res) => {
+  try{
+    const users = await User.find();
+    res.status(200).send({ users });
+  }catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
