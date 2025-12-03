@@ -11,7 +11,7 @@ app.use(cors());
 
 // const databaseURI = "mongodb://localhost:27017/"; // this is MongoDB's URL
 
-const databaseURI = "mongodb+srv://khushiaggarwal9456:khushiaggarwal9456_MONGODB@project.ai3w0qt.mongodb.net/?retryWrites=true&w=majority&appName=project/tasks"; // this is MongoDB's URL
+const databaseURI = "mongodb+srv://khushiHandly:handly%40123@handlytask.dulmdca.mongodb.net/?appName=HandlyTask";
 
 mongoose.connect(databaseURI).then(() => { // this is the function to connect with MongoDB
     console.log("connected to database")
